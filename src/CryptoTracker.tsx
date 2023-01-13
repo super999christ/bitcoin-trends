@@ -9,6 +9,24 @@ const useGetCardData = (cryptoName, options) => {
     }, options);
 }
 
+export const formatPrice = (price) => {
+    const formatConfig = new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2
+    });
+    return formatConfig.format(price);
+};
+
+const formatPlusMinus = (priceChange) => {
+    const isPositive = Math.sign(priceChange) >= 0;
+    return (
+        <span className={`${isPositive ? "positive" : "negative"}`}>
+            {`${isPositive ? "+" : ""}${priceChange.toFixed(2)}%`}
+        </span>
+    );
+}
+
 const CryptoTracker = ({ cryptoName }: any) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
@@ -23,7 +41,10 @@ const CryptoTracker = ({ cryptoName }: any) => {
         staleTime: 60000,
     });
 
-    console.log(data, isLoading);
+    //console.log(data, isLoading);
+    if (isLoading) return null;
+
+    const { image, name, market_data: marketData } = data;
 
     return (
         <div className={`card ${isExpanded ? 'expanded' : 'collapsed'}`}>
@@ -35,7 +56,12 @@ const CryptoTracker = ({ cryptoName }: any) => {
                     <button className="close" onClick={() => setIsExpanded(false)}>Close</button>
                 )}
                 <div className="top-data">
-                    TODO BTC info here
+                    <img src={image?.large} alt={`${name} logo`} />
+                    <h3 className="crypto-name">{name}</h3>
+                    <h4 className="crypto-price">
+                        {formatPrice(marketData?.current_price?.usd)}
+                        {formatPlusMinus(marketData?.price_change_percentage_24h)}
+                    </h4>
                 </div>
             </div>
         </div>
