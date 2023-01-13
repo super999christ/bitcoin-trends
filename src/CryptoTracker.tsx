@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
+import { useQuery } from "react-query";
 
-const CryptoTracker = ({ cryptoName }) => {
+
+const useGetCardData = (cryptoName, options) => {
+    return useQuery(`${cryptoName}-card`, async () => {
+        const response = await fetch(`https://api.coingecko.com/api/v3/coins/${cryptoName}`);
+        return await response.json();
+    }, options);
+}
+
+const CryptoTracker = ({ cryptoName }: any) => {
     const [isExpanded, setIsExpanded] = useState(false);
 
     const onCardClick = () => {
@@ -8,6 +17,13 @@ const CryptoTracker = ({ cryptoName }) => {
             setIsExpanded(true);
         }
     }
+
+    const { data, isLoading } = useGetCardData(cryptoName, {
+        refetchInterval: 60000,
+        staleTime: 60000,
+    });
+
+    console.log(data, isLoading);
 
     return (
         <div className={`card ${isExpanded ? 'expanded' : 'collapsed'}`}>
@@ -25,3 +41,5 @@ const CryptoTracker = ({ cryptoName }) => {
         </div>
     );
 }
+
+export default CryptoTracker;
