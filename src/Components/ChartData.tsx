@@ -10,24 +10,48 @@ import {
 import format from "date-fns/format";
 import { formatPrice } from "./CryptoTracker";
 
+
+
+const everyMonth : number[] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+let today = new Date();
+let sum = 0;
+
+for (let i = 0; i < today.getMonth(); i++) {
+  sum += everyMonth[i];
+}
+let total = sum + today.getDate();
+console.log(total, 'total');
+
 const intervals = [
   {
-    label: "1D",
-    value: 1
-  },
-  {
-    label: "7D",
-    value: 7
-  },
-  {
     label: "1M",
-    value: 30
+    value: 30,
+    order: 1,
   },
   {
-    label: "3M",
-    value: 90
+    label: "6D",
+    value: 182,
+    order: 2,
+  },
+  {
+    label: "1Y",
+    value: 365,
+    order: 3,
+  },
+  {
+    label: "3Y",
+    value: 1095,
+    order: 4,
+  },
+  {
+    label: "YTD",
+    value: total,
+    order: 5,
   }
 ];
+
+
 
 const useGetChartData = (cryptoName: string, interval: number, options: object) => {
   return useQuery(
@@ -50,6 +74,7 @@ interface TypeChartData {
 const ChartData = ({ cryptoName, isExpanded } : TypeChartData) => {
   const [dataInterval, setDataInterval] = useState<number>(intervals[0].value);
 
+
   const { isLoading, data } = useGetChartData(cryptoName, dataInterval, {
     refetchInterval: 60000,
     staleTime: 60000,
@@ -59,6 +84,39 @@ const ChartData = ({ cryptoName, isExpanded } : TypeChartData) => {
         y: item[1]
       }))
   });
+
+  
+
+  console.log("data", data);
+  const tempLine = (d : number) => {
+    if (d === 30) {
+      return "rgb(23,23,23)";
+    } else if (d === 182) {
+      return "rgb(73,73,73)";
+    } else if (d === 365) {
+      return "rgb(123,123,123)";
+    } else if (d === 1095) {
+      return "rgb(173,173,173)";
+    } else if (d === total) {
+      return "rgb(223,223,223)";
+    }
+  };
+
+  const tempChart = (f : number) => {
+    if (f === 30) {
+      return "red";
+    } else if (f === 182) {
+      return "pink";
+    } else if (f === 365) {
+      return "blue";
+    } else if (f === 1095) {
+      return "green";
+    } else if (f === total) {
+      return "black";
+    }
+  };
+  
+  
 
   return (
     <div className="chart">
@@ -94,6 +152,14 @@ const ChartData = ({ cryptoName, isExpanded } : TypeChartData) => {
           width={800}
           height={400}
           domainPadding={5}
+          style={{
+            parent: {
+              border: "1px solid #ccc"
+            },
+            background: {
+              fill: tempChart(dataInterval) as string
+            }
+          }}
           containerComponent={
             <VictoryVoronoiContainer
               labels={({ datum }) => formatPrice(datum.y)} // Format the price
@@ -118,7 +184,8 @@ const ChartData = ({ cryptoName, isExpanded } : TypeChartData) => {
           <VictoryLine
             style={{
               data: {
-                stroke: "#fff",
+                stroke: tempLine(dataInterval) as string,
+                //stroke: ((intervals[0].order === 1) ? "rgb(23,23,23)" : ((intervals[1].order === 2) ? "rgb(73,73,73)" : ((intervals[2].order === 3) ? "rgb(123,123,123)" : ((intervals[3].order === 4) ? "rgb(173,173,173)" : "rgb(223,223,223)")))),
                 strokeWidth: 2
               }
             }}

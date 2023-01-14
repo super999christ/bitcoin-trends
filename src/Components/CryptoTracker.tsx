@@ -17,7 +17,7 @@ const useGetCardData = (cryptoName: string, options: object) => {
 export const formatPrice = (price : number) => {
     const formatConfig = new Intl.NumberFormat("en-US", {
         style: "currency",
-        currency: "USD",
+        currency: "ESU",
         minimumFractionDigits: 2
     });
     return formatConfig.format(price);
