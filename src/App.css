@@ -21,6 +21,10 @@ button {
   cursor: pointer;
 }
 
+.calculator-wrapper {
+  text-align: center;
+}
+
 .hitzone {
   cursor: pointer;
   position: absolute;

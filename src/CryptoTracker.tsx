@@ -1,6 +1,8 @@
 // External Dependencies
 import { useState } from 'react';
 import { useQuery } from "react-query";
+import Calculator from './Calculator';
+
 
 // Internal Dependencies
 import ChartData from './ChartData';
@@ -52,7 +54,12 @@ const CryptoTracker = ({ cryptoName }: any) => {
     //console.log(data, isLoading);
     if (isLoading) return null;
 
+    
+
     const { image, name, market_data: marketData } = data;
+
+    let current_price: any  = marketData?.current_price?.usd;
+    
 
     return (
         <div className={`card ${isExpanded ? "expanded" : "collapsed"}`}>
@@ -72,6 +79,7 @@ const CryptoTracker = ({ cryptoName }: any) => {
               </h4>
             </div>
             <ChartData isExpanded={isExpanded} cryptoName={cryptoName} />
+            <Calculator rate = {current_price} />
           </div>
         </div>
     );

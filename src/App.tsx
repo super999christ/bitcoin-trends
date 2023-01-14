@@ -5,14 +5,15 @@ import { ReactQueryDevtools } from 'react-query-devtools';
 
 // Internal Depedencies
 import CryptoTracker from './CryptoTracker';
+
 import './App.css';
 
 const queryClient = new QueryClient();
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-   <CryptoTracker cryptoName="bitcoin" />
-   <ReactQueryDevtools />
+    <CryptoTracker cryptoName="bitcoin" />
+    <ReactQueryDevtools />
   </QueryClientProvider>
 );
 
